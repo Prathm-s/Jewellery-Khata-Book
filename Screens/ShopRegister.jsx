@@ -155,7 +155,7 @@ const ShopRegister = ({ navigation: { goBack,navigate }, route }) => {
                     label='Saler Type'
                     onChangeText={(text) => handleOnChange(text, 'dealerType')}
                     data={[
-                        { label: 'Dealer', value: 'dealer' },
+                        { label: 'Wholesaler', value: 'dealer' },
                         { label: 'Retailer', value: 'retailer' },
                     ]}
                     // error={errors.dealerType}

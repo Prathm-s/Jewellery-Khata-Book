@@ -12,6 +12,7 @@ import { serverUrl } from '../constants/apiData';
 import TokenContext from '../Context/TokenContext';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { RadioButton } from 'react-native-paper';
 
 
 
@@ -20,7 +21,7 @@ const BillingForm = ({ navigation, route }) => {
     const { token } = useContext(TokenContext)
     const [Price, setPrice] = useState(0.00)
     const [modal, setModal] = useState(false)
-
+    const [checked, setChecked] = useState("retailer")
     const [paymentData, setPaymentData] = useState({
         total: 0,
         discount: 0,
@@ -56,7 +57,7 @@ const BillingForm = ({ navigation, route }) => {
         getProducts()
         editInvoice()
         var date = new Date()
-        setDate( date.getUTCFullYear() + '-' + parseInt(date.getUTCMonth() + 1) + '-' + date.getUTCDate())
+        setDate(date.getUTCFullYear() + '-' + parseInt(date.getUTCMonth() + 1) + '-' + date.getUTCDate())
     }, [])
 
 
@@ -103,7 +104,7 @@ const BillingForm = ({ navigation, route }) => {
             const invoice = route.params.invoice
             const details = route.params.userDetails["userDetails"]
             console.log(route.params.userDetails)
-            console.log("items list : ",items,invoice)
+            console.log("items list : ", items, invoice)
             setCustomer(details)
             setPaymentData({
                 total: invoice.total_amount,
@@ -125,7 +126,7 @@ const BillingForm = ({ navigation, route }) => {
                     qty: item.qty - 1,
                     majuri: 0
                 }
-            }) 
+            })
             const silverArr = invoice.silver_items.map((item) => {
                 return {
                     itemId: item.id,
@@ -139,7 +140,7 @@ const BillingForm = ({ navigation, route }) => {
                     qty: item.qty - 1,
                     majuri: 0
                 }
-            }) 
+            })
 
             setItems(goldArr.concat(silverArr))
 
@@ -706,6 +707,34 @@ const BillingForm = ({ navigation, route }) => {
             </Pressable> */}
 
         </View>
+        <View style={styles.typeTab}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <RadioButton
+                    color={COLORS.primaryBlue}
+
+                    value="wholsaler"
+                    status={checked == "wholsaler" ? "checked" : null}
+                    onPress={() => {
+                        setChecked('wholsaler')
+                    }}
+                />
+                <Text>Wholsaler</Text>
+            </View>
+
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <RadioButton
+                    color={COLORS.primaryBlue}
+                    value="retailer"
+                    status={checked == "retailer" ? "checked" : null}
+                    onPress={() => {
+                        setChecked('retailer')
+                    }}
+                />
+                <Text>Retailer</Text>
+            </View>
+
+
+        </View>
 
         <View style={{
             backgroundColor: 'white',
@@ -786,8 +815,16 @@ export const Bill = ({ navigation, route }) => {
 }
 
 const styles = StyleSheet.create({
-    invoiceButton: {
+    typeTab: {
+        marginHorizontal: 16,
+        marginBottom: 8,
 
+        flexDirection: 'row',
+        borderRadius: 8,
+        backgroundColor: 'white',
+        padding: 10,
+    },
+    invoiceButton: {
         borderRadius: 4,
         borderWidth: 1,
         borderColor: COLORS.naturelLight,

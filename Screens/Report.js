@@ -123,7 +123,7 @@ const Report = () => {
                 </View>
 
             </View>
-
+{/* 
             <View style={styles.valueMainCont}>
                 {show && <RNDateTimePicker value={date} onChange={() => { setShow(false) }} />}
 
@@ -165,7 +165,7 @@ const Report = () => {
 
                 </View>
 
-            </View>
+            </View> */}
 
 
         </View>
