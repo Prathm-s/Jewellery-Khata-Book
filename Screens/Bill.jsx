@@ -21,6 +21,7 @@ const BillingForm = ({ navigation, route }) => {
     const { token } = useContext(TokenContext)
     const [Price, setPrice] = useState(0.00)
     const [modal, setModal] = useState(false)
+    const [wsModal, setWsModal] = useState(false)
     const [checked, setChecked] = useState("retailer")
     const [paymentData, setPaymentData] = useState({
         total: 0,
@@ -360,7 +361,8 @@ const BillingForm = ({ navigation, route }) => {
     }
 
     const onAddItem = () => {
-        setModal(!modal)
+        setModal(false)
+        setWsModal(false)
         var FinalPrice = (parseInt(item["netWt"]) * parseInt(item["grmRate"])) + (parseInt(item['majuri']) * parseInt(item["netWt"]))
 
         var gst = item["gst"]
@@ -613,6 +615,169 @@ const BillingForm = ({ navigation, route }) => {
         </Modal>
     )
 
+    const wholeaSalerModal = (
+        <Modal
+            visible={wsModal}
+            animationType='fade'
+            transparent={true}
+            statusBarTranslucent={true}
+        >
+            <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+
+                    <View >
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text style={styles.Head}>Add Item</Text>
+                            <Pressable
+                                onPress={() => setWsModal(false)}
+                            >
+                                <Text>Close</Text>
+                            </Pressable>
+                        </View>
+
+                        <View style={{ borderColor: COLORS.naturelLight, borderWidth: 1, borderRadius: 4, marginBottom: 4 }}>
+                            <DynamicDropdown
+                                data={products}
+                                itemCallback={itemCallback}
+                                onChange={item => onSearchItem(item)}
+                                labelField="item_name"
+                                valueField="item_name"
+                                placeholder="Select Item"
+                                searchPlaceholder="Search Item"
+                            />
+
+                        </View>
+
+                        <Input
+                            label='Item Name'
+                            data={item.itemName}
+                            onChangeText={(text) => {
+                                handleOnChange(text, 'itemName')
+                            }}
+                            error={errors.itemName}
+                            onFocus={() => handleError(null, 'itemName')}
+                        />
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <View style={{ width: '48%' }}>
+                                <Input
+                                    data={item.itemDesc}
+                                    label='Item Description'
+                                    onChangeText={(text) => {
+                                        handleOnChange(text, 'itemDesc')
+                                    }}
+
+                                />
+                            </View>
+                            <View style={{ width: '48%' }}>
+                                <Input label='Gross Wt.'
+                                    data={item.grossWt}
+                                    onChangeText={(text) => {
+                                        handleOnChange(text, 'grossWt')
+                                    }}
+                                    onFocus={() => handleError(null, "grossWt")}
+                                    error={errors.grossWt}
+                                />
+
+
+                            </View>
+                        </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <View style={{ width: '48%' }}>
+                                <Input label='Fine'
+                                    data={item.fine}
+                                    onChangeText={(text) => {
+                                        handleOnChange(text, 'fine')
+                                    }}
+                                    onFocus={() => handleError(null, "fine")}
+                                    error={errors.fine}
+                                />
+                            </View>
+                            <View style={{ width: '48%' }}>
+                                <Input label='Wastage'
+                                    data={item.wastage}
+                                    onChangeText={(text) => {
+                                        handleOnChange(text, 'wastage')
+                                    }}
+                                    onFocus={() => handleError(null, "wastage")}
+                                    error={errors.wastage}
+                                />
+
+
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <View style={{ width: '48%' }}>
+                                <Input label='Todays Rate'
+                                    data={item.grossWt}
+
+                                    onChangeText={(text) => {
+                                        handleOnChange(text, 'grossWt')
+                                    }}
+                                    onFocus={() => handleError(null, "grossWt")}
+                                    error={errors.grossWt}
+                                />
+                            </View>
+                            <View style={{ width: '48%' }}>
+                                <Input label='Net. Wt'
+                                    data={item.fineRate}
+
+                                    onChangeText={(text) => {
+                                        handleOnChange(text, 'fineRate')
+                                    }}
+                                    onFocus={() => handleError(null, "fineRate")}
+                                    error={errors.fineRate}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <View style={{ width: '48%' }}>
+                                <Input label='GST %'
+                                    data={item.gst}
+                                    onChangeText={(text) => {
+                                        handleOnChange(text, 'gst')
+                                    }}
+                                    onFocus={() => handleError(null, "gst")}
+                                    error={errors.gst}
+                                />
+
+                            </View>
+                            <View style={{ width: '48%' }}>
+                                <Input label='Majuri'
+                                    data={item.majuri}
+                                    onChangeText={(text) => {
+                                        handleOnChange(text, 'majuri')
+                                    }}
+                                    onFocus={() => handleError(null, "majuri")}
+                                    error={errors.majuri}
+                                />
+
+                            </View>
+                        </View>
+
+
+
+                    </View>
+                    <PrimaryButton
+                        title={"Add Item"}
+                        onPress={() => onAddItem()}
+                    />
+                </View>
+
+            </View>
+        </Modal>
+    )
+
+    const selectModal = () => {
+        if (checked == "retailer") {
+            setModal(true)
+        } else {
+            setWsModal(true)
+        }
+
+    }
     const dateEvent = (event, date) => {
 
         let changedDate = date.getUTCFullYear() + '-' + parseInt(date.getUTCMonth() + 1) + '-' + date.getUTCDate()
@@ -745,7 +910,7 @@ const BillingForm = ({ navigation, route }) => {
 
             <Pressable
                 style={styles.addItemButton}
-                onPress={() => setModal(!modal)}
+                onPress={() => selectModal()}
             >
                 <AntDesign style={styles.icon} color={COLORS.primaryBlue} name="pluscircle" size={20} />
                 <Text style={{ color: COLORS.primaryBlue }}>Add Item</Text>
@@ -792,6 +957,7 @@ const BillingForm = ({ navigation, route }) => {
 
             {showModal}
             {showUserModal}
+            {wholeaSalerModal}
 
             <View style={{ margin: 16 }}>
                 <PrimaryButton title={'Save'}

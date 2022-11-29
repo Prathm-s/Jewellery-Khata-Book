@@ -145,7 +145,7 @@ const ExportPdf = ({ navigation, route }) => {
     };
 
     let file = await RNHTMLtoPDF.convert(options)
-    // console.log(file.filePath);
+    console.log(file.filePath);
     Alert.alert('Successfully Exported', 'Path:' + file.filePath, [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Open', onPress: () => openFile(file.filePath) }

@@ -12,7 +12,7 @@ import ShopRegister from './Screens/ShopRegister';
 import { AppProvider } from './Context/TokenContext';
 import Forgot from './Screens/Forgot';
 import TrailPeroid from './Screens/TrailPeroid';
-
+import Test from './Screens/Test';
 
 
 
@@ -36,6 +36,7 @@ export default function App() {
           <Stack.Screen component={PurchaseT} name="Purchase" />
           <Stack.Screen component={SellT} name="Sell" />
           <Stack.Screen component={TrailPeroid} name="TrailPeriod" />
+          <Stack.Screen component={Test} name="Test"/>
 
 
 
