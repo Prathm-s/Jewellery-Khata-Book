@@ -41,7 +41,10 @@ const BillingForm = ({ navigation, route }) => {
         netWt: "",
         gst: "",
         qty: 0,
-        majuri: 0
+        majuri: 0,
+        wastage: 0,
+        fine: 0,
+        fineWt: 0,
     })
     const [date, setDate] = useState(new Date())
     const [show, setShow] = useState(false)
@@ -216,7 +219,7 @@ const BillingForm = ({ navigation, route }) => {
         setPrice(priceCal.toFixed(2))
         setPaymentData(current => {
             return {
-                ...current, total: priceCal.toFixed(2)
+                ...current, total: priceCal.toFixed(2) - paymentData.discount
             }
         })
         console.log(paymentData)
@@ -242,10 +245,14 @@ const BillingForm = ({ navigation, route }) => {
     }
 
     const editItem = (idx) => {
-
-
+        console.log(items[idx])
         setItem(items[idx])
-        setModal(true)
+        if (items[idx].fine) {
+            setWsModal(true)
+        } else {
+
+            setModal(true)
+        }
         setIndex(idx)
 
     }
@@ -283,7 +290,8 @@ const BillingForm = ({ navigation, route }) => {
                     "stone_wt": "23",
                     "fine_wt": item.grmRate,
                     "price": item.itemPrice,
-                    "qty": item.qty
+                    "qty": item.qty,
+
                 }
 
             } else {
@@ -334,6 +342,7 @@ const BillingForm = ({ navigation, route }) => {
         const invoiceObject = {
             "customer": customer.id,
             "total_amount": Price,
+            "discount": paymentData.discount,
             "paid_amount": paymentData.paidAmount,
             "gst": customer.gst_no,
             "created_at": date,
@@ -361,9 +370,19 @@ const BillingForm = ({ navigation, route }) => {
     }
 
     const onAddItem = () => {
+
+        if (wsModal) {
+            //fineWeight = wastage + fine 
+            //fineWeight*majuri*todayRate 
+            //Replace that 1 with today rate 
+            var FinalPrice = (parseInt(item["wastage"]) + parseInt(item["fine"])) * (parseInt(item['majuri']) * 1)
+
+        } else {
+            var FinalPrice = (parseInt(item["netWt"]) * parseInt(item["grmRate"])) + (parseInt(item['majuri']) * parseInt(item["netWt"]))
+        }
         setModal(false)
         setWsModal(false)
-        var FinalPrice = (parseInt(item["netWt"]) * parseInt(item["grmRate"])) + (parseInt(item['majuri']) * parseInt(item["netWt"]))
+
 
         var gst = item["gst"]
         if (gst !== "" && gst != null && gst != 0) {
@@ -721,13 +740,13 @@ const BillingForm = ({ navigation, route }) => {
                             </View>
                             <View style={{ width: '48%' }}>
                                 <Input label='Net. Wt'
-                                    data={item.fineRate}
+                                    data={item.netWt}
 
                                     onChangeText={(text) => {
-                                        handleOnChange(text, 'fineRate')
+                                        handleOnChange(text, 'netWt')
                                     }}
-                                    onFocus={() => handleError(null, "fineRate")}
-                                    error={errors.fineRate}
+                                    onFocus={() => handleError(null, "netWt")}
+                                    error={errors.netWt}
                                 />
                             </View>
                         </View>
@@ -782,13 +801,14 @@ const BillingForm = ({ navigation, route }) => {
 
         let changedDate = date.getUTCFullYear() + '-' + parseInt(date.getUTCMonth() + 1) + '-' + date.getUTCDate()
         if (event.type == "set") {
+            setShow(false)
+
             setDate(changedDate)
             setCustomer(curr => {
                 return {
                     ...curr, date: changedDate
                 }
             })
-            setShow(false)
             return
         }
         return
@@ -801,7 +821,7 @@ const BillingForm = ({ navigation, route }) => {
 
         {show && <RNDateTimePicker value={new Date()} onChange={dateEvent} />}
 
-        <View style={{ padding: 16 }}>
+        {route.params === undefined?<View style={{ padding: 16 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
                 <DynamicDropdown
                     data={customers}
@@ -824,7 +844,7 @@ const BillingForm = ({ navigation, route }) => {
             </View>
 
 
-        </View>
+        </View>:<View style={{padding:16}}></View>}
 
 
         <View style={{ backgroundColor: 'white', padding: 16, marginHorizontal: 16, borderRadius: 8, }}>
@@ -932,6 +952,8 @@ const BillingForm = ({ navigation, route }) => {
                     <Text style={{ flex: 0.1 }}>₹</Text>
 
                     <TextInput
+                        placeholder={paymentData.paidAmount}
+                        data={paymentData.paidAmount}
                         onChangeText={(text) => {
                             setPaymentData(current => {
                                 return {
@@ -944,11 +966,34 @@ const BillingForm = ({ navigation, route }) => {
                     // placeholder={paymentData.paidAmount}
                     />
                 </View>
+
+                <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+                    <Text style={{ flex: 3 }}>Discount</Text>
+                    <Text style={{ flex: 0.1 }}>₹</Text>
+
+                    <TextInput
+                        placeholder={paymentData.discount}
+
+                        data={paymentData.discount}
+                        onChangeText={(text) => {
+                            setPaymentData(current => {
+                                return {
+                                    ...current, discount: parseFloat(text)
+                                }
+                            })
+
+
+                        }}
+                        style={{ flex: 1, textAlign: 'right', borderBottomWidth: 1, borderBottomColor: 'gray', borderStyle: 'dashed' }}
+                    // placeholder={paymentData.paidAmount}
+                    />
+                </View>
+
                 <View style={{ flexDirection: 'row', marginBottom: 10 }}>
                     <Text style={{ flex: 3, color: 'green' }}>Balance Due</Text>
                     <Text style={{ flex: 0.1 }}>₹</Text>
 
-                    <Text style={{ flex: 1, textAlign: 'right', color: 'green' }}>  {parseFloat(paymentData.total) - paymentData.paidAmount}</Text>
+                    <Text style={{ flex: 1, textAlign: 'right', color: 'green' }}>  {parseFloat(paymentData.total) - paymentData.paidAmount - parseFloat(paymentData.discount)}</Text>
                 </View>
 
 

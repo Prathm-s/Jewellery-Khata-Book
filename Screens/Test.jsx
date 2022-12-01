@@ -6,8 +6,6 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import FileViewer from 'react-native-file-viewer';
 import { Alert } from 'react-native';
 
-import RNFetchBlob from 'rn-fetch-blob'
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 
 const Test = () => {
 
@@ -40,10 +38,10 @@ const Test = () => {
   }
 
   const share = () => {
-    RNFetchBlob.fs
-      .readFile("file:///storage/emulated/0/Android/Pdf.pdf", 'base64')
-      .then(data => console.log(data))
-      .catch(error => console.log(error))
+    // RNFetchBlob.fs
+    //   .readFile("file:///storage/emulated/0/Android/Pdf.pdf", 'base64')
+    //   .then(data => console.log(data))
+    //   .catch(error => console.log(error))
 
   }
   return (

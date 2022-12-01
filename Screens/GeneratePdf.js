@@ -149,6 +149,7 @@ const ExportPdf = ({ navigation, route }) => {
     Alert.alert('Successfully Exported', 'Path:' + file.filePath, [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Open', onPress: () => openFile(file.filePath) }
+
     ], { cancelable: true });
 
   }

@@ -20,6 +20,7 @@ const InvoicesFilter = () => {
     const [purchase, setPurchase] = useState([])
     const [sell, setSell] = useState([])
     const [invoices, setInvoices] = useState([])
+    const [invoiceBack, setInvoicesBack] = useState([])
 
     const [show, setShow] = useState(false)
 
@@ -40,12 +41,15 @@ const InvoicesFilter = () => {
     useEffect(() => {
         if (active == 1) {
             setInvoices(sell)
+            setInvoicesBack(sell)
         } else if (active == 2) {
             setInvoices(sell.concat(purchase))
+            setInvoicesBack(sell.concat(purchase))
         } else {
             setInvoices(purchase)
+            setInvoicesBack(purchase)
         }
-        console.log(invoices)
+
     }, [active])
 
 
@@ -69,9 +73,9 @@ const InvoicesFilter = () => {
                 Authorization: "Token " + token.access
             }
         }).then(res => {
-            console.log(res.data)
             const result = res.data
             setInvoices(res.data['purchase_invoices'])
+            setInvoicesBack(res.data['purchase_invoices'])
             setSell(result['sell_invoces'])
             setPurchase(result['purchase_invoices'])
         })
@@ -96,6 +100,15 @@ const InvoicesFilter = () => {
 
 
     }
+    const searchItem = (itemName) => {
+        
+        const filterd = invoiceBack.filter((item, index) => {
+            if (item.customer_name.toLowerCase().includes(itemName.toLowerCase())) {
+                return item
+            }
+        })
+        setInvoices(filterd)
+    }
 
     const dateEvent = (event, date) => {
         if (event.type == "set") {
@@ -112,12 +125,12 @@ const InvoicesFilter = () => {
             setShow(false)
             return
         }
-        return 
+        return
 
     };
 
     const displayInvoices = invoices.map((item, index) => {
-
+        console.log(item)
         return (
             <View key={index} style={{ padding: 8, borderBottomColor: COLORS.naturelLight, borderBottomWidth: 1 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -126,8 +139,8 @@ const InvoicesFilter = () => {
                 </View>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{ color: 'lightgray' }}>Invoice No: 123</Text>
-                    <Text style={{ color: 'lightgray' }}>12/02/2022</Text>
+                    <Text style={{ color: 'lightgray' }}>Invoice No: {item.id}</Text>
+                    <Text style={{ color: 'lightgray' }}>{item.created_at.replaceAll('-', '/')}</Text>
                 </View>
             </View>
         )
@@ -138,6 +151,7 @@ const InvoicesFilter = () => {
 
             <Input
                 label={'Search Invoice'}
+                onChangeText={(text) => searchItem(text)}
             />
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomColor: COLORS.naturelLight, borderBottomWidth: 1, paddingBottom: 10 }}>
                 <View style={{ flexDirection: 'row', }}>

@@ -28,7 +28,7 @@ const InvoicePreview = ({ navigation, route }) => {
     const userDetails = route.params.userDetails
     const total = route.params.total
     const invoiceObj = route.params.inst
-    console.log("From Invoice Preview:",invoiceObj)
+    console.log("From Invoice Preview:", invoiceObj)
     const [invoiceId, setInvoiceId] = useState(null)
 
 
@@ -74,17 +74,17 @@ const InvoicePreview = ({ navigation, route }) => {
     const storeInvoice = () => {
 
         if (invoiceId !== null) {
-            console.log(invoiceObj,invoiceId)
-            axios.patch(serverUrl.url+'/api/app/sell/invoice/?invice_no='+invoiceId,{
-                "paid_amount":invoiceObj.paid_amount
-            },{
-                headers:{
-                    Authorization:'Token '+token.access
+            console.log(invoiceObj, invoiceId)
+            axios.patch(serverUrl.url + '/api/app/sell/invoice/?invice_no=' + invoiceId, {
+                "paid_amount": invoiceObj.paid_amount
+            }, {
+                headers: {
+                    Authorization: 'Token ' + token.access
                 }
-            }).then(res=>{
+            }).then(res => {
                 alert("Invoice Updated Successfully!!")
                 console.log(res)
-            }).catch(error=>alert(error))
+            }).catch(error => alert(error))
 
         } else {
 
@@ -190,7 +190,7 @@ const InvoicePreview = ({ navigation, route }) => {
         amount: paymentData.total,
         amt: paymentData.paidAmount,
     }
-    
+
     const htmlContent = `
           <html>
             <head>
@@ -229,7 +229,7 @@ const InvoicePreview = ({ navigation, route }) => {
                   </tr>
                   <tr>
                     <th><span>Amount Due</span></th>
-                    <td><span id="prefix">₹</span><span>${parseFloat(total)-parseFloat(invoiceObj.paid_amount)}</span></td>
+                    <td><span id="prefix">₹</span><span>${parseFloat(total) - parseFloat(invoiceObj.paid_amount)}</span></td>
                   </tr>
                 </table>
                 <table class="inventory">
@@ -258,7 +258,7 @@ const InvoicePreview = ({ navigation, route }) => {
                   </tr>
                   <tr>
                     <th><span>Balance Due</span></th>
-                    <td><span data-prefix>₹</span><span>${parseFloat(total)-parseFloat(invoiceObj.paid_amount)}</span></td>
+                    <td><span data-prefix>₹</span><span>${parseFloat(total) - parseFloat(invoiceObj.paid_amount)}</span></td>
                   </tr>
                 </table>
               </article>
@@ -309,10 +309,12 @@ const InvoicePreview = ({ navigation, route }) => {
         // console.log(file.filePath);
         Alert.alert('Successfully Exported', 'Path:' + file.filePath, [
             { text: 'Cancel', style: 'cancel' },
-            { text: 'Open', onPress: () => openFile(file.filePath) }
+            { text: 'Open', onPress: () => openFile(file.filePath) },
+            { text: 'Share', onPress: () => shareFile(file.filePath) }
         ], { cancelable: true });
 
     }
+
 
     const openFile = (filepath) => {
         const path = filepath;// absolute-path-to-my-local-file.
